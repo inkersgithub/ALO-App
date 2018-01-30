@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {    //when physical back button pressed
             switch (keyCode) {                              //instead of closing app
                 case KeyEvent.KEYCODE_BACK:
-                    if ((webView.getUrl().contains("newbook.php")) && (webView.canGoBack())) {
+                    if ((!(webView.getUrl().equals("https://inkers.in/alo/index.php#home")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php#menu1")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php#menu2")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php"))) && (webView.canGoBack())) {
                         webView.goBack();
                     } else {
                         if(exit){
