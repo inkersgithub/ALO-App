@@ -19,7 +19,7 @@
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
 
     <style name="MenuItemTextAppearance">
-        <item name="android:textColor">@color/colorPrimary</item> // replace this value with your desired menu item color.
+        <item name="android:textColor">@color/colorPrimary</item> // replace this value with your desir
     </style>
 
 </resources>
