@@ -140,14 +140,14 @@ public class MainActivity extends AppCompatActivity {
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
             if (request.getUrl().toString().startsWith("tel:")) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(request.getUrl().toString()));
                 startActivity(intent);
                 view.reload();
                 return true;
             }
 
             if (request.getUrl().toString().startsWith("whatsapp://")) {
-                view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(request.getUrl().toString())));
                 return true;
             }
 
