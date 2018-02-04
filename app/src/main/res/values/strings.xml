@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">ALO</string>
     <string name="no_net">Oops..No Internet connection found!</string>
-    <string name="refresh">Refresh</string>
+    <string name="refresh">Retry</string>
     <string name="exit">Exit</string>
+    <string name="about">ALO aims on flow of books at feasible cost. We allows ALO users to sell their books, xerox copies, and related products for free, and at the same time they can purchase from other users.</string>
+    <string name="about_title">About</string>
+    <string name="contact_title">Contact Us</string>
 </resources>

@@ -116,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
 
         webView.setWebViewClient(new AloWebViewClient());
         webView.setWebChromeClient(new AloWebChromeClient());
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.clearMatches();
+        webView.clearFormData();
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setLoadsImagesAutomatically(true);
@@ -327,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {    //when physical back button pressed
             switch (keyCode) {                              //instead of closing app
                 case KeyEvent.KEYCODE_BACK:
-                    if ((!(webView.getUrl().equals("https://inkers.in/alo/index.php#home")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php#menu1")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php#menu2")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php"))) && (webView.canGoBack())) {
+                    if ((!(webView.getUrl().equals("https://inkers.in/alo/index.php#home")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php#menu1")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php#menu2")) && !(webView.getUrl().equals("https://inkers.in/alo/index.php")) && !(webView.getUrl().equals("https://inkers.in/alo/login.php"))) && (webView.canGoBack())) {
                         webView.goBack();
                     } else {
                         if(exit){
@@ -372,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to Exit?")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent homeIntent = new Intent(Intent.ACTION_MAIN);
                         homeIntent.addCategory( Intent.CATEGORY_HOME );
@@ -380,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(homeIntent);
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
                     }
@@ -391,10 +394,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void aboutClick(MenuItem menuItem){
+    public void creditClick(MenuItem menuItem){
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.credit_dialog_layout,null);
+        dialogBuilder.setView(view);
+
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+    }
+
+    public void aboutClick(MenuItem menuItem){
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.about_dialog_layout,null);
         dialogBuilder.setView(view);
 
         AlertDialog dialog = dialogBuilder.create();

@@ -16,9 +16,13 @@
         app:showAsAction="always">
     </item>
 
-    <item
-        android:title="About"
+    <item android:title="About"
         android:onClick="aboutClick">
+    </item>
+
+    <item
+        android:title="Credits"
+        android:onClick="creditClick">
     </item>
 
 </menu>
