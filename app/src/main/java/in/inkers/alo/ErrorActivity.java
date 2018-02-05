@@ -7,6 +7,8 @@ import android.view.View;
 
 public class ErrorActivity extends AppCompatActivity implements View.OnClickListener{
 
+    String link;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -14,6 +16,9 @@ public class ErrorActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.tvRefresh).setOnClickListener(this);
         findViewById(R.id.tvExit).setOnClickListener(this);
+
+        Intent intent = getIntent();
+        link = intent.getStringExtra("link");
 
     }
 
@@ -23,7 +28,10 @@ public class ErrorActivity extends AppCompatActivity implements View.OnClickList
         switch(v.getId()){
 
             case R.id.tvRefresh:
-                startActivity(new Intent(this,MainActivity.class)) ;
+                Intent main = new Intent(this,MainActivity.class);
+                if(link!=null)
+                    main.putExtra("link",link);
+                startActivity(main) ;
                 finish();
                 break;
 

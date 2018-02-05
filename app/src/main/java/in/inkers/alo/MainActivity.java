@@ -32,14 +32,12 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -49,8 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
     WebView webView;
     ProgressBar progressBar;
-    String url;
+    String url,link;
     Boolean exit;
+    Intent intent;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private String mCM;
@@ -116,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
         exit = false;
         url="https://inkers.in/alo/login.php";
 
+        intent = getIntent();
+        link = intent.getStringExtra("link");
+
         webView.setWebViewClient(new AloWebViewClient());
         webView.setWebChromeClient(new AloWebChromeClient());
         webView.getSettings().setAppCacheEnabled(true);
@@ -138,8 +140,10 @@ public class MainActivity extends AppCompatActivity {
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
-        webView.loadUrl(url);
-
+        if(link != null)
+            webView.loadUrl(link);
+        else
+            webView.loadUrl(url);
     }
 
     private class AloWebViewClient extends WebViewClient {
@@ -207,7 +211,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            startActivity(new Intent(MainActivity.this,ErrorActivity.class));
+            intent = new Intent(MainActivity.this,ErrorActivity.class);
+            if(Build.VERSION.SDK_INT>=23)
+                intent.putExtra("link",request.getUrl().toString());
+            startActivity(intent);
             finish();
 
 //            if(Build.VERSION.SDK_INT>=23) {
@@ -231,7 +238,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            startActivity(new Intent(MainActivity.this,ErrorActivity.class));
+            intent = new Intent(MainActivity.this,ErrorActivity.class);
+            intent.putExtra("link",failingUrl);
+            startActivity(intent);
             finish();
 
 //            if((errorCode == ERROR_CONNECT) || (errorCode == ERROR_FILE_NOT_FOUND) || (errorCode == ERROR_TIMEOUT)){
