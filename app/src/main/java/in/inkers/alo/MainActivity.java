@@ -33,8 +33,10 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebViewDatabase;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -117,11 +119,15 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new AloWebViewClient());
         webView.setWebChromeClient(new AloWebChromeClient());
         webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         webView.clearMatches();
         webView.clearFormData();
+        WebViewDatabase.getInstance(this).clearFormData();
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setSaveFormData(false);
+        webView.getSettings().setSavePassword(false);
 
         if(Build.VERSION.SDK_INT >= 21){
             webView.getSettings().setMixedContentMode(0);
@@ -195,38 +201,48 @@ public class MainActivity extends AppCompatActivity {
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
 
-            startActivity(new Intent(MainActivity.this,ErrorActivity.class));
-            finish();
-
-            if(Build.VERSION.SDK_INT>=23) {
-                if ((error.getErrorCode() == ERROR_CONNECT) || (error.getErrorCode() == ERROR_FILE_NOT_FOUND) || (error.getErrorCode() == ERROR_TIMEOUT)) {
-                    startActivity(new Intent(MainActivity.this, ErrorActivity.class));
-                    finish();
+            if(Build.VERSION.SDK_INT>=23){
+                if(String.valueOf(error.getErrorCode()).equals("-15")){
+                    return;
                 }
             }
 
-            if(!isConnected(MainActivity.this)) {  //checks internet connection
-                startActivity(new Intent(MainActivity.this,ErrorActivity.class));
-                finish();
-            }
+            startActivity(new Intent(MainActivity.this,ErrorActivity.class));
+            finish();
+
+//            if(Build.VERSION.SDK_INT>=23) {
+//                if ((error.getErrorCode() == ERROR_CONNECT) || (error.getErrorCode() == ERROR_FILE_NOT_FOUND) || (error.getErrorCode() == ERROR_TIMEOUT)) {
+//                    startActivity(new Intent(MainActivity.this, ErrorActivity.class));
+//                    finish();
+//                }
+//            }
+//
+//            if(!isConnected(MainActivity.this)) {  //checks internet connection
+//                startActivity(new Intent(MainActivity.this,ErrorActivity.class));
+//                finish();
+//            }
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
 
+            if(String.valueOf(errorCode).equals("-15")){
+                return;
+            }
+
             startActivity(new Intent(MainActivity.this,ErrorActivity.class));
             finish();
 
-            if((errorCode == ERROR_CONNECT) || (errorCode == ERROR_FILE_NOT_FOUND) || (errorCode == ERROR_TIMEOUT)){
-                startActivity(new Intent(MainActivity.this, ErrorActivity.class));
-                finish();
-            }
-
-            if(!isConnected(MainActivity.this)) {  //checks internet connection
-                startActivity(new Intent(MainActivity.this,ErrorActivity.class));
-                finish();
-            }
+//            if((errorCode == ERROR_CONNECT) || (errorCode == ERROR_FILE_NOT_FOUND) || (errorCode == ERROR_TIMEOUT)){
+//                startActivity(new Intent(MainActivity.this, ErrorActivity.class));
+//                finish();
+//            }
+//
+//            if(!isConnected(MainActivity.this)) {  //checks internet connection
+//                startActivity(new Intent(MainActivity.this,ErrorActivity.class));
+//                finish();
+//            }
         }
     }
 
@@ -344,6 +360,7 @@ public class MainActivity extends AppCompatActivity {
                             homeIntent.addCategory( Intent.CATEGORY_HOME );
                             homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(homeIntent);
+                            this.finish();
                         }
                         else{
                             Toast.makeText(this,"Press BACK again to exit", Toast.LENGTH_SHORT).show();
@@ -387,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
                         homeIntent.addCategory( Intent.CATEGORY_HOME );
                         homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homeIntent);
+                        MainActivity.this.finish();
                     }
                 })
                 .setNegativeButton("NO", new DialogInterface.OnClickListener() {

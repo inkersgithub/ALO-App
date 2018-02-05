@@ -32,6 +32,7 @@ public class ErrorActivity extends AppCompatActivity implements View.OnClickList
                 homeIntent.addCategory( Intent.CATEGORY_HOME );
                 homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(homeIntent);
+                this.finish();
         }
     }
 }
