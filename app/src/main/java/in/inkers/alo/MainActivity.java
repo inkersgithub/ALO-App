@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setSaveFormData(false);
         webView.getSettings().setSavePassword(false);
+        webView.getSettings().setGeolocationEnabled(true);
 
         if(Build.VERSION.SDK_INT >= 21){
             webView.getSettings().setMixedContentMode(0);
@@ -205,53 +206,44 @@ public class MainActivity extends AppCompatActivity {
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
 
-            if(Build.VERSION.SDK_INT>=23){
-                if(String.valueOf(error.getErrorCode()).equals("-15")){
-                    return;
+            if(Build.VERSION.SDK_INT>=23) {
+                if (!isConnected(MainActivity.this)) {
+                    intent = new Intent(MainActivity.this, ErrorActivity.class);
+                    intent.putExtra("link", request.getUrl().toString());
+                    startActivity(intent);
+                    finish();
                 }
             }
 
-            intent = new Intent(MainActivity.this,ErrorActivity.class);
-            if(Build.VERSION.SDK_INT>=23)
-                intent.putExtra("link",request.getUrl().toString());
-            startActivity(intent);
-            finish();
 
-//            if(Build.VERSION.SDK_INT>=23) {
-//                if ((error.getErrorCode() == ERROR_CONNECT) || (error.getErrorCode() == ERROR_FILE_NOT_FOUND) || (error.getErrorCode() == ERROR_TIMEOUT)) {
-//                    startActivity(new Intent(MainActivity.this, ErrorActivity.class));
-//                    finish();
-//                }
-//            }
-//
-//            if(!isConnected(MainActivity.this)) {  //checks internet connection
-//                startActivity(new Intent(MainActivity.this,ErrorActivity.class));
-//                finish();
-//            }
+            if(Build.VERSION.SDK_INT>=23) {
+               if ((error.getErrorCode() == ERROR_CONNECT) || (error.getErrorCode() == ERROR_FILE_NOT_FOUND) || (error.getErrorCode() == ERROR_TIMEOUT)) {
+                   intent = new Intent(MainActivity.this, ErrorActivity.class);
+                   intent.putExtra("link",request.getUrl().toString());
+                   startActivity(intent);
+                   finish();
+                }
+           }
+
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
 
-            if(String.valueOf(errorCode).equals("-15")){
-                return;
+            if(!isConnected(MainActivity.this)) {
+                intent = new Intent(MainActivity.this, ErrorActivity.class);
+                intent.putExtra("link", failingUrl);
+                startActivity(intent);
+                finish();
             }
 
-            intent = new Intent(MainActivity.this,ErrorActivity.class);
-            intent.putExtra("link",failingUrl);
-            startActivity(intent);
-            finish();
-
-//            if((errorCode == ERROR_CONNECT) || (errorCode == ERROR_FILE_NOT_FOUND) || (errorCode == ERROR_TIMEOUT)){
-//                startActivity(new Intent(MainActivity.this, ErrorActivity.class));
-//                finish();
-//            }
-//
-//            if(!isConnected(MainActivity.this)) {  //checks internet connection
-//                startActivity(new Intent(MainActivity.this,ErrorActivity.class));
-//                finish();
-//            }
+            if((errorCode == ERROR_CONNECT) || (errorCode == ERROR_FILE_NOT_FOUND) || (errorCode == ERROR_TIMEOUT)){
+                intent = new Intent(MainActivity.this, ErrorActivity.class);
+                intent.putExtra("link", failingUrl);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 
