@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -38,6 +40,9 @@ import android.webkit.WebViewClient;
 import android.webkit.WebViewDatabase;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -50,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     String url,link;
     Boolean exit;
     Intent intent;
+    LocationManager locationManager;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private String mCM;
@@ -103,6 +109,30 @@ public class MainActivity extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >=23 && (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if ((!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))&&(Build.VERSION.SDK_INT<23)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("This Application requires GPS ENABLED to work properly.")
+                    .setCancelable(false)
+                    .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            Toast.makeText(MainActivity.this,"Please ENABLE GPS and restart Application to use",Toast.LENGTH_LONG).show();
+                            exitApp();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
 
         webView = findViewById(R.id.wvMain);
         progressBar = findViewById(R.id.pbWrbView);
@@ -254,6 +284,14 @@ public class MainActivity extends AppCompatActivity {
             callback.invoke(origin, true, false);
         }
 
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+
+            if(newProgress>90)
+                progressBar.setVisibility(View.GONE);
+        }
+
         //For Android 3.0+
         public void openFileChooser(ValueCallback<Uri> uploadMsg){
             mUM = uploadMsg;
@@ -364,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
                             this.finish();
                         }
                         else{
-                            Toast.makeText(this,"Press BACK again to exit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this,"Press BACK again to Exit", Toast.LENGTH_SHORT).show();
                             this.exit=true;
                             new Handler().postDelayed(new Runnable() {
                                 @Override
@@ -445,5 +483,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void exitApp(){
 
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.addCategory( Intent.CATEGORY_HOME );
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(homeIntent);
+        MainActivity.this.finish();
+
+    }
 }
