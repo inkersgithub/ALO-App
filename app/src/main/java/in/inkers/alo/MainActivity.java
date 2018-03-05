@@ -41,7 +41,6 @@ import android.webkit.WebViewDatabase;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
 import java.io.IOException;

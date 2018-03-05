@@ -6,8 +6,8 @@ android {
         applicationId "in.inkers.alo"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 11
-        versionName "1.0.4"
+        versionCode 12
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,5 +25,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation 'com.google.android.gms:play-services:11.8.0'
 }
